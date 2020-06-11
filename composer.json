@@ -1,0 +1,13 @@
+{
+  "require": {
+    "vlucas/phpdotenv": "^4.1",
+    "twig/twig": "^3.0",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Services\\": "Services/"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{% extends 'base.twig' %}
+
+{% block table %}
+    <table id="countries_list" class="display" style="width:80%">
+        <thead>
+        <tr>
+            <th></th>
+            {% for service in service_list %}
+                <th>{{ service }}</th>
+            {% endfor %}
+            <th>total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in data %}
+            <tr>
+                <td>{{ item.country_name }}</td>
+                {% for service in item.service %}
+                    <td {% if service.wa.count == 0 %} style="font-size: 12px" {% endif %}>
+                        {% if service.wa.cost is null and service.wa.count is null %}
+                            -
+                        {% else %}
+                            {{ service.wa.count }}
+                            {% if service.wa.cost is defined %}
+                                ({{ service.wa.cost }})
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+                <td>
+                    services: {{ item.total.services }} <br>
+                    total: {{ item.total.total }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
