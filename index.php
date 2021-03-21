@@ -1,36 +1,36 @@
 <?php
 require_once(__DIR__ . '/bootstrap.php');
-$config_countries = require_once(__DIR__ . '/countries.php');
+$configCountries = require_once(__DIR__ . '/countries.php');
 
-$api_result = [];
-$service_list = [];
-$read_api = explode(',', getenv('READ_API'));
+$apiResult = [];
+$serviceList = [];
+$readApi = explode(',', getenv('READ_API'));
 // loop all services
-foreach ($read_api as $api_key => $api_name) {
-    $api_class_name = 'Services\\' . ucfirst(strtolower($api_name)) . 'Api';
+foreach ($readApi as $apiKey => $apiName) {
+    $apiClassName = 'Services\\' . ucfirst(strtolower($apiName)) . 'Api';
 
     // check if parser for such service exists
-    if (class_exists($api_class_name)) {
+    if (class_exists($apiClassName)) {
         // add this service to list
-        $service_list[] = getenv($api_name . '_NAME');
+        $serviceList[] = getenv($apiName . '_NAME');
 
-        $api_object = new $api_class_name();
+        $apiObject = new $apiClassName();
         // loop countries
-        foreach ($config_countries as $key => $country) {
+        foreach ($configCountries as $key => $country) {
 
             // get data for each country
-            $data = $api_object->getPrices(getenv('DEFAULT_SERVICE'), $key);
+            $data = $apiObject->getPrices(getenv('DEFAULT_SERVICE'), $key);
 
-            if ($api_name == 'SMS') {
-                $api_result[$key]['country_name'] = $country;
-                $api_result[$key]['service'][$api_name] = $data[$key];
+            if ($apiName == 'SMS') {
+                $apiResult[$key]['country_name'] = $country;
+                $apiResult[$key]['service'][$apiName] = $data[$key];
             } else {
-                $api_result[$key]['service'][$api_name]['wa']['count'] = null;
+                $apiResult[$key]['service'][$apiName]['wa']['count'] = null;
                 if ($data) {
                     foreach ($data as $index => $datum) {
 
                         if ($index == 'whatsapp_0' || $index == 'whatsapp_1' || $index == 'wa_1' || $index == 'wa_0') {
-                            $api_result[$key]['service'][$api_name]['wa']['count'] = $datum;
+                            $apiResult[$key]['service'][$apiName]['wa']['count'] = $datum;
                         }
 
                     }
@@ -43,6 +43,6 @@ foreach ($read_api as $api_key => $api_name) {
 
 $template = $twig->load('table.twig');
 echo $template->render([
-    'data' => $api_result,
-    'service_list' => $service_list
+    'data'        => $apiResult,
+    'serviceList' => $serviceList
 ]);
